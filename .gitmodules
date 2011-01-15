@@ -1,0 +1,3 @@
+[submodule "vendor/Dwoo"]
+	path = vendor/Dwoo
+	url = https://github.com/Seldaek/Dwoo.git
