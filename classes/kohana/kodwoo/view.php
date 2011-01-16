@@ -1,9 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
+/* Copyright (c) 2011, Tyler Larson. All rights reserved.
+ * Use and distribution permitted under the terms of the MIT license.
+ * See LICENSE.txt for details.
+ */
 
 class Kohana_Kodwoo_View extends View {
 
-	protected static $_dwoo;
+	protected $_dwoo;
 	public $group;
+	protected $_plugins = array();
 
 	/**
 	 * Kodwoo view factory
@@ -30,14 +35,52 @@ class Kohana_Kodwoo_View extends View {
 	}
 
 	/**
+	 * Registers a class member function as a template function
+	 * @param string in-template function name
+	 * @param string class function name
+	 */
+	public function add_plugin($name, $function = NULL)
+	{
+		if ($function === null) $function = $name;
+		$this->add_raw_plugin($name, array($this,$function));
+	}
+
+	/**
+	 * Registers a non-member function as a template plugin. Use any function
+	 * descriptor accepted by the underlying Dwoo addPlugin function.
+	 * @param string in-template function name
+	 * @param mixed function definition as documented in Dwoo::addPlugin()
+	 */
+	public function add_raw_plugin($name, $function)
+	{
+		if (isset($this->_dwoo)) {
+			$this->_dwoo->addPlugin($name,$function);
+		}
+		else
+		{
+			$this->_plugins[$name] = $function;
+		}
+	}
+
+	/**
+	 * Regisers a template plugin from a member function of another class.
+	 * @param string in-template function name
+	 * @param object class instance
+	 * @param string method name
+	 */
+	public function add_remote_plugin($name, $object, $method) {
+		$this->add_raw_plugin($name,array($object,$method));
+	}
+
+	/**
 	 * Get (and initialize) the dwoo instance.
 	 * @return Dwoo
 	 */
-	public static function get_dwoo()
+	public function get_dwoo()
 	{
-		if (!isset(self::$_dwoo)) {
+		if (!isset($this->_dwoo)) {
 			$dwoo = new Dwoo;
-			$config = Kohana::config('dwoo');
+			$config = Kohana::config('kodwoo');
 			if ($config) {
 				foreach ($config as $key=>$value) {
 					switch($key){
@@ -50,9 +93,15 @@ class Kohana_Kodwoo_View extends View {
 					}
 				}
 			}
-			self::$_dwoo = $dwoo;
+			foreach ($this->_plugins as $name => $function) {
+				$dwoo->addPlugin($name, $function);
+			}
+			$dwoo->group = $this->group;
+			$dwoo->addResource('kodwoo', 'Kodwoo_Internal_Template');
+
+			$this->_dwoo = $dwoo;
 		}
-		return self::$_dwoo;
+		return $this->_dwoo;
 	}
 
 	/**
@@ -62,7 +111,7 @@ class Kohana_Kodwoo_View extends View {
 	 */
 	protected function get_compiler()
 	{
-		$config = Kohana::config("dwoo.$this->group");
+		$config = Kohana::config("kodwoo.$this->group");
 		$compiler = new Dwoo_Compiler();
 		$compiler->setAutoEscape(Arr::get($config,'auto_escape',TRUE));
 		return $compiler;
@@ -107,9 +156,8 @@ class Kohana_Kodwoo_View extends View {
 		} else {
 			$data = $this->_data;
 		}
-
-		$dwoo = self::get_dwoo();
-		return $dwoo->get($this->_file,$data,$this->get_compiler());
+		$dwoo = $this->get_dwoo();
+		return $dwoo->get(new Kodwoo_Internal_Template($this->_file),$data,$this->get_compiler());
 	}
 
 	/**
@@ -123,6 +171,9 @@ class Kohana_Kodwoo_View extends View {
 	 */
 	public function set_filename($file)
 	{
+		// The tilde is unnecessary here, but some people might get confused.
+		if (substr($file,0,1)=="~") $file = substr($file,1);
+
 		// Detect if there was a file extension
 		$_file = explode('.', $file);
 
@@ -136,7 +187,7 @@ class Kohana_Kodwoo_View extends View {
 		// Otherwise set the extension to the configured default
 		else
 		{
-			$ext = Arr::get(Kohana::config("dwoo.$this->group"),'extension','tpl');
+			$ext = Arr::get(Kohana::config("kodwoo.$this->group"),'extension','tpl');
 		}
 
 		if (($path = Kohana::find_file('views', $file, $ext)) === FALSE)

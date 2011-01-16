@@ -3,5 +3,5 @@
  * Use and distribution permitted under the terms of the MIT license.
  * See LICENSE.txt for details.
  */
-class Kodwoo_View extends Kohana_Kodwoo_View { }
+class Kodwoo_Internal_Template extends Kohana_Kodwoo_Internal_Template { }
 
