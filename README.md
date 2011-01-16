@@ -8,20 +8,20 @@ A Kohana dwoo view adapter
 [Smarty](http://smarty.net), but re-written for PHP5.
 
 Kodwoo allows you to use Dwoo with Kohana 3 with minimal effort. Simply use the
-`Kodwoo_View` class instead of
-`View` or `Kohana_View` like you were used to, and (by default) name your
-template files ending in `.tpl` instead of `.php`, and you're up and running. 
+`Kodwoo_View` class instead of `View` or `Kohana_View` like you were used to,
+and (by default) name your template files ending in `.tpl` instead of `.php`,
+and you're up and running. 
 
 Template parameters are added exactly the same way you would with standard
-Kohana views. That is, either supplied to the `Kodwoo_view`
+Kohana views. That is, either supplied to the `Kodwoo_View`
 constructor/factory, or by using the view instance's `bind()` and `set()`
 routines.
 
 ## Configuration
 
-Further customization can be added by adding a *dwoo* configuration section
+Further customization can be added by adding a *kodwoo* configuration section
 to your application or module configuration area. For details of what goes
-into this configuration, see `kodwoo/config/dwoo.php`. Note that some parts
+into this configuration, see `kodwoo/config/kodwoo.php`. Note that some parts
 of the configuration can be segmented out to allow different parts of the
 application (different modules, for example) to use different dwoo template
 configuration options, such as which extension to use or whether to turn on
