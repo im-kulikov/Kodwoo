@@ -19,7 +19,7 @@ class Kohana_Kodwoo_View extends View {
 	 */
 	public static function factory($file = NULL, array $data = NULL, $group='default')
 	{
-		return new Kodwoo_View($file, $data);
+		return new Kodwoo_View($file, $data, $group);
 	}
 
 	/**
@@ -157,7 +157,17 @@ class Kohana_Kodwoo_View extends View {
 			$data = $this->_data;
 		}
 		$dwoo = $this->get_dwoo();
-		return $dwoo->get(new Kodwoo_Internal_Template($this->_file),$data,$this->get_compiler());
+
+		try {
+			ob_start();
+
+			return $dwoo->get(new Kodwoo_Internal_Template($this->_file),$data,$this->get_compiler());
+
+			ob_end_flush();
+		} catch (Exception $ex) {
+			ob_end_clean();
+			throw ($ex);
+		}
 	}
 
 	/**
