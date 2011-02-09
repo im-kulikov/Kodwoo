@@ -152,7 +152,7 @@ class Kohana_Kodwoo_View extends View {
 
 		$data = $this->_data;
 		if (View::$_global_data) {
-			$data = array_marge(View::$_global_data, $this->_data);
+			$data = array_merge(View::$_global_data, $this->_data);
 		} else {
 			$data = $this->_data;
 		}
