@@ -53,7 +53,7 @@ class Kohana_Kodwoo_Internal_Template extends Dwoo_Template_File {
 	 * file name begins with a "~". E.g.: "~errors/404" will search for "./views/errors/404.tpl" in
 	 * the application, modules, and system path.
 	 *
-	 * @param Dwoo_Core $dwoo the dwoo instance requiring it
+	 * @param Dwoo $dwoo the dwoo instance requiring it
 	 * @param mixed $resourceId the filename (relative to this template's dir) of the template to include
 	 * @param int $cacheTime duration of the cache validity for this template,
 	 * 						 if null it defaults to the Dwoo instance that will
@@ -67,7 +67,7 @@ class Kohana_Kodwoo_Internal_Template extends Dwoo_Template_File {
 	 * 											an include, extends or any other plugin)
 	 * @return Dwoo_Template_File|null
 	 */
-	public static function templateFactory(Dwoo_Core $dwoo, $resourceId, $cacheTime = null, $cacheId = null, $compileId = null, Dwoo_ITemplate $parentTemplate = null)
+	public static function templateFactory(Dwoo $dwoo, $resourceId, $cacheTime = null, $cacheId = null, $compileId = null, Dwoo_ITemplate $parentTemplate = null)
 	{
 		if (DIRECTORY_SEPARATOR === '\\') {
 			$resourceId = str_replace(array("\t", "\n", "\r", "\f", "\v"), array('\\t', '\\n', '\\r', '\\f', '\\v'), $resourceId);
