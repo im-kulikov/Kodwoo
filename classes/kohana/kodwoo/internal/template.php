@@ -26,7 +26,7 @@ class Kohana_Kodwoo_Internal_Template extends Dwoo_Template_File {
 		else
 		{
 			if ($group==null) $ext = 'tpl';
-			$ext = Arr::get(Kohana::config("kodwoo.$group"),'extension','tpl');
+			$ext = Arr::get(Kohana::$config->load("kodwoo.$group"),'extension','tpl');
 		}
 		if (($path = Kohana::find_file('views', $file, $ext)) === FALSE)
 		{
