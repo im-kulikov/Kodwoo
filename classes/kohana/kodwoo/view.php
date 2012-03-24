@@ -80,7 +80,7 @@ class Kohana_Kodwoo_View extends View {
 	{
 		if (!isset($this->_dwoo)) {
 			$dwoo = new Dwoo;
-			$config = Kohana::config('kodwoo');
+			$config = Kohana::$config->load('kodwoo');
 			if ($config) {
 				foreach ($config as $key=>$value) {
 					switch($key){
@@ -111,7 +111,7 @@ class Kohana_Kodwoo_View extends View {
 	 */
 	protected function get_compiler()
 	{
-		$config = Kohana::config("kodwoo.$this->group");
+		$config = Kohana::$config->load("kodwoo.$this->group");
 		$compiler = new Dwoo_Compiler();
 		$compiler->setAutoEscape(Arr::get($config,'auto_escape',TRUE));
 		return $compiler;
@@ -197,7 +197,7 @@ class Kohana_Kodwoo_View extends View {
 		// Otherwise set the extension to the configured default
 		else
 		{
-			$ext = Arr::get(Kohana::config("kodwoo.$this->group"),'extension','tpl');
+			$ext = Arr::get(Kohana::$config->load("kodwoo.$this->group"),'extension','tpl');
 		}
 
 		if (($path = Kohana::find_file('views', $file, $ext)) === FALSE)
